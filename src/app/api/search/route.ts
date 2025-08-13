@@ -14,15 +14,15 @@ export async function POST(request: Request) {
 
     if (process.env.MOCK_API === 'true') {
       // Mock response for testing purposes
-      console.log("MOCK MODE: Returning mock data");
+      // console.log("MOCK MODE: Returning mock data");
       const { data } = await request.json();
-      await new Promise(resolve => setTimeout(resolve, 600)); // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 600)); // Simulating network delay
 
       const mockSearchResult = data.slice(0, 2);
       return NextResponse.json(mockSearchResult);
     }
 
-    console.log("LIVE MODE: Calling Gemini API for search.");
+    // console.log("LIVE MODE: Calling Gemini API for search.");
 
     const { query, data, entityType } = await request.json();
 

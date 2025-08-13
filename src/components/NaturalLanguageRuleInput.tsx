@@ -5,7 +5,7 @@ import { useDataStore } from '@/store/useDataStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Bot, Sparkles } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import { Rule } from '@/types';
 
 export function NaturalLanguageRuleInput() {

@@ -21,7 +21,7 @@ export function RuleBuilder() {
   // State for loadLimit rule
   const [loadLimitGroup, setLoadLimitGroup] = useState('');
   const [loadLimitMaxSlots, setLoadLimitMaxSlots] = useState(0);
-
+  // Options for task and worker group selection
   const taskOptions: OptionType[] = tasks.map(t => ({ value: t.TaskID, label: `${t.TaskID}: ${t.TaskName}` }));
   const workerGroupOptions: OptionType[] = [...new Set(workers.map(w => w.WorkerGroup))]
     .filter(Boolean)

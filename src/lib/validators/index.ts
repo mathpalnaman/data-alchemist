@@ -1,6 +1,8 @@
 import { Client, Worker, Task, ValidationError } from '@/types';
 import { validateDuplicateIds } from './validateDuplicateIds';
-
+import { validateOutOfRange } from './validateOutOfRange';
+import { validateBrokenJson } from './validateBrokenJson';
+import { validateMalformedLists } from './ValidateMalformedLists';
 interface AllData {
   clients: Client[];
   workers: Worker[];
@@ -13,10 +15,13 @@ export function validateAllData(data: AllData): ValidationError[] { // This func
   allErrors = allErrors.concat(
     validateDuplicateIds(data.clients, 'ClientID', 'clients'),
     validateDuplicateIds(data.workers, 'WorkerID', 'workers'),
-    validateDuplicateIds(data.tasks, 'TaskID', 'tasks')
+    validateDuplicateIds(data.tasks, 'TaskID', 'tasks'),
+    validateOutOfRange(data.clients, data.tasks),
+    validateBrokenJson(data.clients),
+    validateMalformedLists(data.workers)
   );
 
-  // Will chain other validator calls
+  // other validation functions would be added here if i had more time
 
   return allErrors;
 }

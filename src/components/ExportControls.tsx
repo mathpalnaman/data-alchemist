@@ -24,7 +24,7 @@ export function ExportControls() {
         }
 
         const exportPromise = new Promise<void>((resolve) => {
-            // 1. Create rules.json
+            // Creating rules.json
             const rulesAndPriorities = {
                 rules,
                 priorities,
@@ -34,7 +34,7 @@ export function ExportControls() {
             });
             saveAs(rulesJsonBlob, "rules.json");
 
-            // 2. Create Excel workbook with cleaned data
+            // Creating Excel workbook with cleaned data
             const workbook = XLSX.utils.book_new();
             if (clients.length > 0) {
                 const clientSheet = XLSX.utils.json_to_sheet(clients);
@@ -49,7 +49,7 @@ export function ExportControls() {
                 XLSX.utils.book_append_sheet(workbook, taskSheet, "Tasks");
             }
 
-            // 3. Save the workbook
+            // Saving the workbook
             XLSX.writeFile(workbook, "cleaned_data.xlsx");
 
             resolve();

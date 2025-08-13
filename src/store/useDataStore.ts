@@ -48,7 +48,7 @@ export const useDataStore = create<AppState>((set, get) => ({
 
   // Actions Implementation
   setData: (entityType, data) => {
-    // FIXED: No 'as any'. We spread the existing state to maintain type integrity.
+    // Spreading the existing state to maintain type integrity.
     set((state) => ({
       ...state,
       [entityType]: data,
@@ -65,7 +65,6 @@ export const useDataStore = create<AppState>((set, get) => ({
         newData[rowIndex] = { ...newData[rowIndex], [field]: value };
       }
       
-      // FIXED: No 'as any'. We return the full state object with the updated array.
       return { ...state, [entityType]: newData };
     });
     get().runAllValidations();
@@ -73,8 +72,6 @@ export const useDataStore = create<AppState>((set, get) => ({
 
   runAllValidations: () => {
     const { clients, workers, tasks } = get();
-    // Assuming validateAllData is correctly typed and exists.
-    // If it's missing, you can comment this out temporarily.
     const errors = validateAllData({ clients, workers, tasks });
     set({ validationErrors: errors });
   },

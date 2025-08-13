@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
     // --- LIVE GEMINI API LOGIC ---
     // This code will only be reached if MOCK_API is not "true".
-    console.log("⚡️ LIVE MODE: Calling Gemini API.");
+    // console.log("⚡️ LIVE MODE: Calling Gemini API.");
     
     const { query, taskContext, workerGroupContext } = await request.json();
 

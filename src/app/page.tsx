@@ -23,7 +23,7 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Upload Section */}
+{/* Upload Section */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -38,7 +38,7 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* --- Main Content Area --- */}
+{/*  Main Content Area  */}
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left Side: Data & Validation */}
           <div className="lg:col-span-3 space-y-8">
