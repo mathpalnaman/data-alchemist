@@ -1,70 +1,97 @@
-import { create } from 'zustand'; // Zustand for state management
-import { Client, Worker, Task, ValidationError } from '@/types';
-import { validateAllData } from '@/lib/validators'; // Importing the validation function
+import { create } from 'zustand';
+import { Client, Worker, Task, ValidationError, Rule, Priorities } from '@/types';
+import { validateAllData } from '@/lib/validators';
 
-// 'type' will map the string identifier to the corresponding entity type
 type DataMap = {
   clients: Client;
   workers: Worker;
   tasks: Task;
 };
 
-// keyof DataMap ensures EntityType to only be 'clients', 'workers', or 'tasks'
 type EntityType = keyof DataMap;
 
 interface AppState {
+  // State Properties
   clients: Client[];
   workers: Worker[];
   tasks: Task[];
   validationErrors: ValidationError[];
+  rules: Rule[];
+  priorities: Priorities;
 
-  // 'K' ensures that if entityType is 'clients', then 'data' must be of type Client[]
+  // Actions
   setData: <K extends EntityType>(entityType: K, data: DataMap[K][]) => void;
-
-  // 'F' is being used in similar to 'K' but this time for the field name
   updateCell: <K extends EntityType, F extends keyof DataMap[K]>(
     entityType: K,
     rowIndex: number,
     field: F,
     value: DataMap[K][F]
   ) => void;
-
   runAllValidations: () => void;
+  addRule: (rule: Rule) => void;
+  deleteRule: (ruleIndex: number) => void;
+  updatePriorities: (newPriorities: Partial<Priorities>) => void;
 }
 
-// V
-
-export const useDataStore = create<AppState>((set, get) => ({ // Initial state
+export const useDataStore = create<AppState>((set, get) => ({
+  // Initial State
   clients: [],
   workers: [],
   tasks: [],
   validationErrors: [],
+  rules: [],
+  priorities: {
+    priorityLevelFulfillment: 70,
+    taskCompletion: 80,
+    fairDistribution: 50,
+  },
 
+  // Actions Implementation
   setData: (entityType, data) => {
-    set({ [entityType]: data });
-    get().runAllValidations(); // Re-validate whenever data is set
+    // FIXED: No 'as any'. We spread the existing state to maintain type integrity.
+    set((state) => ({
+      ...state,
+      [entityType]: data,
+    }));
+    get().runAllValidations();
   },
 
   updateCell: (entityType, rowIndex, field, value) => {
     set((state) => {
       const currentData = state[entityType];
-      
-      // Creating a shallow copy to avoid direct state mutation
       const newData = [...currentData];
 
       if (newData[rowIndex]) {
-          newData[rowIndex] = { ...newData[rowIndex], [field]: value }; // Update the specific field
+        newData[rowIndex] = { ...newData[rowIndex], [field]: value };
       }
-
-      return { [entityType]: newData };
+      
+      // FIXED: No 'as any'. We return the full state object with the updated array.
+      return { ...state, [entityType]: newData };
     });
-    get().runAllValidations(); // Re-validate whenever a cell is edited
+    get().runAllValidations();
   },
 
   runAllValidations: () => {
-    console.log("Running validations...");
     const { clients, workers, tasks } = get();
+    // Assuming validateAllData is correctly typed and exists.
+    // If it's missing, you can comment this out temporarily.
     const errors = validateAllData({ clients, workers, tasks });
     set({ validationErrors: errors });
+  },
+
+  addRule: (rule) => {
+    set((state) => ({ rules: [...state.rules, rule] }));
+  },
+
+  deleteRule: (ruleIndex) => {
+    set((state) => ({
+      rules: state.rules.filter((_, index) => index !== ruleIndex),
+    }));
+  },
+
+  updatePriorities: (newPriorities) => {
+    set((state) => ({
+      priorities: { ...state.priorities, ...newPriorities },
+    }));
   },
 }));

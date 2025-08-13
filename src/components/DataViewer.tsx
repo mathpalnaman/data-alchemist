@@ -1,26 +1,29 @@
 "use client";
 import { useDataStore } from '@/store/useDataStore';
 import { clientColumnDefs, workerColumnDefs, taskColumnDefs } from '@/lib/columnDefs';
-import { DataDialog } from './DataDialog';
+import { DataSection } from './DataSection';
 
 export function DataViewer() {
   const { clients, workers, tasks } = useDataStore();
 
   return (
-    <div className="flex flex-wrap gap-4">
-      <DataDialog
+    <div className="w-full space-y-4">
+      <DataSection
+      key ="clients"
         entityType="clients"
         title="Clients"
         data={clients}
         columnDefs={clientColumnDefs}
       />
-      <DataDialog
+      <DataSection
+      key="workers"
         entityType="workers"
         title="Workers"
         data={workers}
         columnDefs={workerColumnDefs}
       />
-      <DataDialog
+      <DataSection
+      key="tasks"
         entityType="tasks"
         title="Tasks"
         data={tasks}

@@ -24,6 +24,25 @@ export interface Task {
   PreferredPhases: string; // Comma-separated list of preferred phases
   MaxConcurrent: number; // Max concurrent tasks
 }
+
+export interface CoRunRule {
+  type: 'coRun';
+  tasks: string[]; // Task IDs that can run together
+}
+
+export interface LoadLimitRule {
+  type: 'loadLimit';
+  workerGroup: string;
+  maxSlotsPerPhase: number;
+}
+ export type Rule = CoRunRule | LoadLimitRule;
+
+ export interface Priorities {
+  priorityLevelFulfillment: number;
+  taskCompletion: number;
+  fairDistribution: number;
+ }
+
 type DataMap = {
   clients: Client;
   workers: Worker;
