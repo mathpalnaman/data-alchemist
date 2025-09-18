@@ -15,7 +15,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-slate-800">
-            Data Alchemist 🧪
+            Data Alchemist ⎙
           </h1>
           <p className="text-slate-500 mt-2">
             Forge your own AI resource-allocation configurator. Upload your data
