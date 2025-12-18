@@ -81,7 +81,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <NaturalLanguageRuleInput />
-                <div className="flex-items-center gap-2">
+                <div className="flex-items-center ">
                   <div className="flex-grow border-t"></div>
                   <span className="text-xs text-slate-400">OR</span>
                   </div>
@@ -107,7 +107,7 @@ export default function Home() {
             <Card>
               <CardHeader>
                 <CardTitle>5. Export</CardTitle>
-                <p className="text-sm text-slate-500 pt-1">When all data is clean and rules areset, export your configuration</p>
+                <p className="text-sm text-slate-500 pt-1">When all data is clean and rules are set, export your configuration</p>
               </CardHeader>
               <CardContent>
                 <ExportControls />

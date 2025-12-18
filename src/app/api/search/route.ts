@@ -2,35 +2,34 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const systemPrompt = `You are an expert data filtering assistant. Your task is to act as a filter for a JSON array.
-    Given a user's plain English query and a JSON array of data, you must return a new JSON array containing only the objects that STRICTLY match the query.
-    
-    IMPORTANT: Your response MUST be ONLY the filtered JSON array. Do not include any explanations, introductory text, or markdown code blocks. Just the raw, valid JSON array.`;
+const systemPrompt = `You are an expert data filtering assistant. Your task is to act as a filter for a JSON array.
+Given a user's plain English query and a JSON array of data, you must return a new JSON array containing only the objects that STRICTLY match the query.
+
+IMPORTANT: Your response MUST be ONLY the filtered JSON array. Do not include any explanations, introductory text, or markdown code blocks. Just the raw, valid JSON array.`;
 
 export async function POST(request: Request) {
   try {
-
+    // --- MOCK API LOGIC ---
     if (process.env.MOCK_API === 'true') {
-      // Mock response for testing purposes
-      // console.log("MOCK MODE: Returning mock data");
       const { data } = await request.json();
-      await new Promise(resolve => setTimeout(resolve, 600)); // Simulating network delay
+      await new Promise(resolve => setTimeout(resolve, 600)); 
 
-      const mockSearchResult = data.slice(0, 2);
+      // Return a slice to prove filtering "happened" visually
+      const mockSearchResult = Array.isArray(data) ? data.slice(0, 2) : [];
       return NextResponse.json(mockSearchResult);
     }
 
-    // console.log("LIVE MODE: Calling Gemini API for search.");
-
+    // --- LIVE GEMINI API LOGIC ---
     const { query, data, entityType } = await request.json();
 
     if (!query || !data || !entityType) {
       return NextResponse.json({ error: 'Missing query, data, or entityType' }, { status: 400 });
     }
 
-    // Combine the instructions, user query, and data into a single prompt
+    // WARNING: Sending large datasets here will fail due to token limits.
+    // Keep demo data under ~50 items for stability.
     const fullPrompt = `
         ${systemPrompt}
 
@@ -41,18 +40,14 @@ export async function POST(request: Request) {
         ${JSON.stringify(data, null, 2)}
     `;
     
-    // Call the Gemini API
     const result = await model.generateContent(fullPrompt);
     const response = result.response;
-    let jsonString = response.text();
+    let text = response.text();
 
-    // Clean the response string before parsing
-    // Gemini might wrap the JSON in markdown, so we remove it.
-    if (jsonString.startsWith("```json")) {
-        jsonString = jsonString.replace(/^```json\n|```$/g, '');
-    }
+    // ROBUST FIX: Strip all markdown code blocks (```json or ```) and whitespace
+    text = text.replace(/```json|```/g, '').trim();
     
-    const filteredArray = JSON.parse(jsonString);
+    const filteredArray = JSON.parse(text);
 
     if (!Array.isArray(filteredArray)) {
         throw new Error("AI did not return a valid array.");
