@@ -41,10 +41,10 @@ cd data-alchemist
 npm install
 
 3. **Configure Environment: Create a .env.local file in the root directory:**
-# Your Google AI Studio Key
+Your Google AI Studio Key
 GOOGLE_API_KEY=your_api_key_here
 
-# Set to 'true' to test UI without consuming API credits
+Set to 'true' to test UI without consuming API credits
 MOCK_API=false
 
 4. **Run the development server:**
